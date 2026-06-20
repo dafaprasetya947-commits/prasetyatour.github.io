@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direktori Pengguna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF8F3;
+    --ink:#1C1C1A;
+    --teal:#1B4B43;
+    --teal-dark:#123630;
+    --amber:#E8A33D;
+    --amber-dark:#9C6A1F;
+    --muted:#8B8680;
+    --line:#E3DFD4;
+    --card:#FFFFFF;
+    --danger:#B5402F;
+    --danger-bg:#FBEAE6;
+    --ok:#3B6D45;
+    --ok-bg:#E9F2EA;
+    --wait-bg:#FBF1E2;
+    --wait:#9C6A1F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- LOGIN ---------- */
+  #login-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .login-shell{
+    width:100%;
+    max-width:840px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    background:var(--card);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,0.04);
+    border:1px solid var(--line);
+  }
+  .login-brand{
+    background:var(--teal);
+    color:#EFEAE0;
+    padding:48px 36px;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .login-brand::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:repeating-linear-gradient(115deg, rgba(232,163,61,0.12) 0px, rgba(232,163,61,0.12) 2px, transparent 2px, transparent 26px);
+    pointer-events:none;
+  }
+  .login-brand .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:14px;
+  }
+  .login-brand h1{
+    font-size:30px;
+    line-height:1.2;
+    margin-bottom:10px;
+  }
+  .login-brand p{
+    font-size:14px;
+    color:#CFC9BC;
+    line-height:1.6;
+    max-width:280px;
+  }
+  .login-brand .idx{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:#9FB3AE;
+    border-top:1px solid rgba(255,255,255,0.15);
+    padding-top:14px;
+  }
+  .login-form{
+    padding:48px 40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .login-form h2{font-size:21px;margin-bottom:6px;}
+  .login-form .sub{font-size:13px;color:var(--muted);margin-bottom:26px;}
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--teal-dark);
+    margin-bottom:6px;
+    letter-spacing:.02em;
+  }
+  .field input{
+    width:100%;
+    padding:11px 13px;
+    border:1px solid var(--line);
+    border-radius:9px;
+    font-size:14px;
+    font-family:'Inter',sans-serif;
+    background:#FCFBF8;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .field input:focus{
+    border-color:var(--teal);
+    box-shadow:0 0 0 3px rgba(27,75,67,0.12);
+  }
+  .btn-primary{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:9px;
+    background:var(--teal);
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    font-family:'Inter',sans-serif;
+    cursor:pointer;
+    transition:background .15s;
+    margin-top:6px;
+  }
+  .btn-primary:hover{background:var(--teal-dark);}
+  .login-error{
+    display:none;
+    background:var(--danger-bg);
+    color:var(--danger);
+    font-size:13px;
+    padding:9px 12px;
+    border-radius:8px;
+    margin-bottom:14px;
+  }
+  .login-hint{
+    margin-top:18px;
+    font-size:12px;
+    color:var(--muted);
+    background:#F4F1E9;
+    border:1px dashed var(--line);
+    border-radius:8px;
+    padding:10px 12px;
+  }
+  .login-hint b{color:var(--ink);font-family:'IBM Plex Mono',monospace;font-weight:500;}
+
+  /* ---------- DASHBOARD ---------- */
+  #dashboard{display:none;min-height:100vh;}
+  .topbar{
+    background:var(--card);
+    border-bottom:1px solid var(--line);
+    padding:16px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .topbar .brandmark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .brandmark .sq{
+    width:30px;height:30px;border-radius:8px;
+    background:var(--teal);
+    color:var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;font-weight:500;
+  }
+  .brandmark span{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;}
+  .topbar .who{
+    display:flex;align-items:center;gap:12px;
+    font-size:13px;color:var(--muted);
+  }
+  .btn-logout{
+    border:1px solid var(--line);
+    background:#fff;
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .btn-logout:hover{border-color:var(--danger);color:var(--danger);}
+
+  .content{padding:28px 32px 48px;max-width:1080px;margin:0 auto;}
+  .content-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-bottom:20px;
+  }
+  .content-head .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--amber-dark);
+    margin-bottom:4px;
+  }
+  .content-head h2{font-size:22px;}
+  .content-head .count{font-size:13px;color:var(--muted);margin-top:4px;}
+
+  .search-wrap{position:relative;width:280px;}
+  .search-wrap input{
+    width:100%;
+    padding:10px 14px 10px 36px;
+    border:1px solid var(--line);
+    border-radius:9px;
+    font-size:13px;
+    font-family:'Inter',sans-serif;
+    background:#fff;
+    outline:none;
+  }
+  .search-wrap input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(27,75,67,0.1);}
+  .search-wrap svg{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    width:15px;height:15px;color:var(--muted);
+  }
+
+  .table-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    text-align:left;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:600;
+    padding:13px 18px;
+    background:#F6F3EC;
+    border-bottom:1px solid var(--line);
+  }
+  tbody td{
+    padding:13px 18px;
+    font-size:13.5px;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FBFAF6;}
+  .no-cell{font-family:'IBM Plex Mono',monospace;color:var(--muted);font-size:12px;}
+  .user-cell{display:flex;align-items:center;gap:10px;}
+  .avatar{
+    width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:600;color:#fff;
+    flex-shrink:0;
+  }
+  .user-name{font-weight:500;}
+  .user-email{font-size:12px;color:var(--muted);}
+  .badge{
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:999px;
+  }
+  .badge.aktif{background:var(--ok-bg);color:var(--ok);}
+  .badge.nonaktif{background:var(--danger-bg);color:var(--danger);}
+  .badge.cuti{background:var(--wait-bg);color:var(--wait);}
+  .role-pill{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--teal-dark);
+    background:#EBF1EF;
+    padding:3px 8px;
+    border-radius:6px;
+  }
+  .empty-row td{
+    text-align:center;
+    padding:40px 18px;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  .pagination{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    border-top:1px solid var(--line);
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .pagination .info{font-size:12px;color:var(--muted);}
+  .pages{display:flex;align-items:center;gap:4px;}
+  .pages button{
+    min-width:30px;
+    height:30px;
+    padding:0 8px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:7px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .pages button:hover:not(:disabled):not(.active){border-color:var(--teal);}
+  .pages button.active{
+    background:var(--teal);
+    border-color:var(--teal);
+    color:#fff;
+  }
+  .pages button:disabled{opacity:.4;cursor:not-allowed;}
+  .pages .dots{
+    width:24px;text-align:center;color:var(--muted);font-size:12px;
+  }
+
+  @media (max-width:680px){
+    .login-shell{grid-template-columns:1fr;}
+    .login-brand{display:none;}
+    .content{padding:20px 16px 40px;}
+    .search-wrap{width:100%;}
+    .content-head{flex-direction:column;align-items:stretch;}
+    thead th:nth-child(4), tbody td:nth-child(4){display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="login-screen">
+  <div class="login-shell">
+    <div class="login-brand">
+      <div>
+        <div class="tag">Direktori — 01</div>
+        <h1>Selamat datang kembali</h1>
+        <p>Masuk untuk mengelola data anggota tim dan melihat status keanggotaan mereka.</p>
+      </div>
+      <div class="idx">DRKT / AKSES&nbsp;TERBATAS / V1.0</div>
+    </div>
+    <div class="login-form">
+      <h2>Masuk</h2>
+      <div class="sub">Gunakan akun admin untuk melanjutkan</div>
+      <div class="login-error" id="login-error">Username atau password salah. Coba lagi.</div>
+      <form id="login-form">
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" autocomplete="username" placeholder="admin">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary">Masuk</button>
+      </form>
+      <div class="login-hint">Demo login &mdash; username: <b>admin</b>, password: <b>admin123</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DASHBOARD ===================== -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="brandmark">
+      <div class="sq">D</div>
+      <span>Direktori Pengguna</span>
+    </div>
+    <div class="who">
+      <span id="who-label">Masuk sebagai admin</span>
+      <button class="btn-logout" id="logout-btn">Keluar</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="content-head">
+      <div>
+        <div class="eyebrow">Manajemen tim</div>
+        <h2>Daftar Pengguna</h2>
+        <div class="count" id="result-count">Menampilkan semua pengguna</div>
+      </div>
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="search-input" placeholder="Cari nama atau email...">
+      </div>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:54px;">No</th>
+            <th>Nama</th>
+            <th>Peran</th>
+            <th>Bergabung</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <div class="pagination">
+        <div class="info" id="page-info">Halaman 1 dari 1</div>
+        <div class="pages" id="pages-nav"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- Data dummy ----------
+  const users = [
+    {name:"Andi Pratama", email:"andi.pratama@perusahaan.id", role:"Admin", joined:"12 Jan 2023", status:"Aktif"},
+    {name:"Siti Rahma", email:"siti.rahma@perusahaan.id", role:"Editor", joined:"03 Feb 2023", status:"Aktif"},
+    {name:"Budi Santoso", email:"budi.santoso@perusahaan.id", role:"Staff", joined:"21 Feb 2023", status:"Cuti"},
+    {name:"Dewi Lestari", email:"dewi.lestari@perusahaan.id", role:"Viewer", joined:"15 Mar 2023", status:"Aktif"},
+    {name:"Eko Wijaya", email:"eko.wijaya@perusahaan.id", role:"Staff", joined:"02 Apr 2023", status:"Nonaktif"},
+    {name:"Fitri Handayani", email:"fitri.handayani@perusahaan.id", role:"Editor", joined:"18 Apr 2023", status:"Aktif"},
+    {name:"Gunawan Saputra", email:"gunawan.saputra@perusahaan.id", role:"Admin", joined:"30 Apr 2023", status:"Aktif"},
+    {name:"Hesti Wulandari", email:"hesti.wulandari@perusahaan.id", role:"Staff", joined:"09 Mei 2023", status:"Aktif"},
+    {name:"Irfan Maulana", email:"irfan.maulana@perusahaan.id", role:"Viewer", joined:"22 Mei 2023", status:"Cuti"},
+    {name:"Joko Susilo", email:"joko.susilo@perusahaan.id", role:"Staff", joined:"06 Jun 2023", status:"Aktif"},
+    {name:"Kartika Sari", email:"kartika.sari@perusahaan.id", role:"Editor", joined:"19 Jun 2023", status:"Aktif"},
+    {name:"Lukman Hakim", email:"lukman.hakim@perusahaan.id", role:"Admin", joined:"01 Jul 2023", status:"Nonaktif"},
+    {name:"Mega Puspita", email:"mega.puspita@perusahaan.id", role:"Staff", joined:"14 Jul 2023", status:"Aktif"},
+    {name:"Nanda Pratiwi", email:"nanda.pratiwi@perusahaan.id", role:"Viewer", joined:"28 Jul 2023", status:"Aktif"},
+    {name:"Oscar Firmansyah", email:"oscar.firmansyah@perusahaan.id", role:"Staff", joined:"10 Agu 2023", status:"Aktif"},
+    {name:"Putri Anggraini", email:"putri.anggraini@perusahaan.id", role:"Editor", joined:"23 Agu 2023", status:"Cuti"},
+    {name:"Qori Ramadhan", email:"qori.ramadhan@perusahaan.id", role:"Staff", joined:"05 Sep 2023", status:"Aktif"},
+    {name:"Rina Marlina", email:"rina.marlina@perusahaan.id", role:"Admin", joined:"17 Sep 2023", status:"Aktif"},
+    {name:"Surya Darmawan", email:"surya.darmawan@perusahaan.id", role:"Viewer", joined:"29 Sep 2023", status:"Nonaktif"},
+    {name:"Tia Amelia", email:"tia.amelia@perusahaan.id", role:"Staff", joined:"11 Okt 2023", status:"Aktif"},
+    {name:"Umar Syarif", email:"umar.syarif@perusahaan.id", role:"Editor", joined:"24 Okt 2023", status:"Aktif"},
+    {name:"Vina Oktaviani", email:"vina.oktaviani@perusahaan.id", role:"Staff", joined:"06 Nov 2023", status:"Aktif"},
+    {name:"Wahyu Setiawan", email:"wahyu.setiawan@perusahaan.id", role:"Admin", joined:"19 Nov 2023", status:"Cuti"},
+    {name:"Yulia Anggraeni", email:"yulia.anggraeni@perusahaan.id", role:"Viewer", joined:"02 Des 2023", status:"Aktif"},
+    {name:"Zaki Ramadhan", email:"zaki.ramadhan@perusahaan.id", role:"Staff", joined:"14 Des 2023", status:"Aktif"},
+    {name:"Ayu Kusuma", email:"ayu.kusuma@perusahaan.id", role:"Editor", joined:"27 Des 2023", status:"Nonaktif"},
+    {name:"Bayu Aji", email:"bayu.aji@perusahaan.id", role:"Staff", joined:"08 Jan 2024", status:"Aktif"},
+    {name:"Citra Dewanti", email:"citra.dewanti@perusahaan.id", role:"Viewer", joined:"21 Jan 2024", status:"Aktif"},
+    {name:"Doni Pradana", email:"doni.pradana@perusahaan.id", role:"Staff", joined:"03 Feb 2024", status:"Aktif"},
+    {name:"Elsa Rahmawati", email:"elsa.rahmawati@perusahaan.id", role:"Admin", joined:"16 Feb 2024", status:"Aktif"},
+    {name:"Farhan Hidayat", email:"farhan.hidayat@perusahaan.id", role:"Editor", joined:"29 Feb 2024", status:"Cuti"},
+    {name:"Gita Permata", email:"gita.permata@perusahaan.id", role:"Staff", joined:"13 Mar 2024", status:"Aktif"},
+  ];
+
+  const avatarColors = ["#1B4B43","#9C6A1F","#B5402F","#3B6D45","#4A3F8C","#7A4A1F"];
+  function colorFor(name){
+    let h = 0;
+    for (let i=0;i<name.length;i++) h = name.charCodeAt(i) + ((h<<5)-h);
+    return avatarColors[Math.abs(h) % avatarColors.length];
+  }
+  function initials(name){
+    return name.split(" ").map(p=>p[0]).slice(0,2).join("").toUpperCase();
+  }
+
+  // ---------- Login ----------
+  const loginScreen = document.getElementById("login-screen");
+  const dashboard = document.getElementById("dashboard");
+  const loginForm = document.getElementById("login-form");
+  const loginError = document.getElementById("login-error");
+
+  loginForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    const u = document.getElementById("username").value.trim();
+    const p = document.getElementById("password").value.trim();
+    if (u === "admin" && p === "admin123") {
+      loginError.style.display = "none";
+      loginScreen.style.display = "none";
+      dashboard.style.display = "block";
+      document.getElementById("who-label").textContent = "Masuk sebagai " + u;
+      renderTable();
+    } else {
+      loginError.style.display = "block";
+    }
+  });
+
+  document.getElementById("logout-btn").addEventListener("click", function(){
+    dashboard.style.display = "none";
+    loginScreen.style.display = "flex";
+    loginForm.reset();
+    searchInput.value = "";
+    currentPage = 1;
+  });
+
+  // ---------- Search + Pagination ----------
+  const PAGE_SIZE = 6;
+  let currentPage = 1;
+  const searchInput = document.getElementById("search-input");
+  const tableBody = document.getElementById("table-body");
+  const pagesNav = document.getElementById("pages-nav");
+  const pageInfo = document.getElementById("page-info");
+  const resultCount = document.getElementById("result-count");
+
+  searchInput.addEventListener("input", function(){
+    currentPage = 1;
+    renderTable();
+  });
+
+  function getFiltered(){
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) return users;
+    return users.filter(u =>
+      u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+    );
+  }
+
+  function badgeClass(status){
+    if (status === "Aktif") return "aktif";
+    if (status === "Nonaktif") return "nonaktif";
+    return "cuti";
+  }
+
+  function renderTable(){
+    const filtered = getFiltered();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    resultCount.textContent = searchInput.value.trim()
+      ? `${filtered.length} hasil ditemukan untuk "${searchInput.value.trim()}"`
+      : `Menampilkan semua ${users.length} pengguna`;
+
+    tableBody.innerHTML = "";
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+    if (pageItems.length === 0) {
+      tableBody.innerHTML = `<tr class="empty-row"><td colspan="5">Tidak ada pengguna yang cocok dengan pencarian.</td></tr>`;
+    } else {
+      pageItems.forEach((u, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="no-cell">${String(start + i + 1).padStart(2,"0")}</td>
+          <td>
+            <div class="user-cell">
+              <div class="avatar" style="background:${colorFor(u.name)}">${initials(u.name)}</div>
+              <div>
+                <div class="user-name">${u.name}</div>
+                <div class="user-email">${u.email}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="role-pill">${u.role}</span></td>
+          <td class="mono" style="font-size:12.5px;color:var(--muted);">${u.joined}</td>
+          <td><span class="badge ${badgeClass(u.status)}">${u.status}</span></td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages){
+    pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
+    pagesNav.innerHTML = "";
+
+    const addBtn = (label, page, opts={}) => {
+      const b = document.createElement("button");
+      b.textContent = label;
+      if (opts.active) b.classList.add("active");
+      if (opts.disabled) b.disabled = true;
+      b.addEventListener("click", () => { currentPage = page; renderTable(); });
+      pagesNav.appendChild(b);
+    };
+    const addDots = () => {
+      const s = document.createElement("span");
+      s.className = "dots";
+      s.textContent = "…";
+      pagesNav.appendChild(s);
+    };
+
+    addBtn("‹", currentPage - 1, {disabled: currentPage === 1});
+
+    const pages = [];
+    for (let p = 1; p <= totalPages; p++) {
+      if (p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1) pages.push(p);
+    }
+    let last = 0;
+    pages.forEach(p => {
+      if (last && p - last > 1) addDots();
+      addBtn(String(p), p, {active: p === currentPage});
+      last = p;
+    });
+
+    addBtn("›", currentPage + 1, {disabled: currentPage === totalPages});
+  }
+</script>
+</body>
+</html>
